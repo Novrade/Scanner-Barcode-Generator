@@ -1,0 +1,62 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Homepage</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+        crossorigin="anonymous">
+  <script type="text/javascript" th:src="@{/js/barcode.js}" src="https://cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.11.3/JsBarcode.all.min.js"></script>
+<!--  <link href='https://fonts.googleapis.com/css?family=Libre Barcode 128' rel='stylesheet'>-->
+  <link th:href="@{\css\style.css}" rel="stylesheet">
+</head>
+<body>
+<h1 align="center">Barcode station and other configuration barcodes</h1>
+<h3 align="center">1. Scan station barcode below</h3>
+  <div id="barcode" align="center" style="margin-top:20px;margin-left:60px">
+  <jsbar-code th:value="${data}"></jsbar-code>
+  </div>
+<h3 align="center">2. Scan main configuration barcode below</h3>
+<div id="configuration" align="center">
+<img th:src="@{/images/configuration.png}"  width="250" height="250"/>
+</div>
+<div id="other" align="center">
+  <h2>Other configuration barcodes</h2>
+  <img align="center" style="margin-left=500px" th:src="@{/images/barcodes.png}"  width="1000" height="1200"/>
+</div>
+<script>
+  document.head.append(
+    Object.assign(document.createElement("script"), {
+      src: "//cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js",
+      onload: () => {
+        customElements.define(
+          "jsbar-code",
+          class extends HTMLElement {
+            connectedCallback() {
+              this.attachShadow({mode:"open"}).innerHTML = `<svg></svg>`;
+              let attr = (x) => this.getAttribute(x) || "";
+              let encode = "\xC9";
+              let options = { // default options
+                format: "CODE128",
+                displayValue: attr("displayValue") != "0",
+                height: 25,
+                width: 1,
+                fontSize: 16,
+                lineColor: attr("lineColor") || "black"
+              };
+              Array.from(this.attributes,({nodeName,nodeValue}) => options[nodeName] = nodeValue);
+              JsBarcode(this.shadowRoot.querySelector("svg"), encode.concat(options.value), options);
+            }
+          }
+        );
+      }
+    }))
+</script>
+<div align="center" >
+  <a th:href="@{/home}">
+    <button>Go back</button>
+  </a>
+</div>
+</body>
+</html>
