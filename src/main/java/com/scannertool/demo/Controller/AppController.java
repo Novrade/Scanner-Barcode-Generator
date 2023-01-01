@@ -25,6 +25,7 @@ public class AppController {
     @Autowired
     private DataRepository dataRepository;
 
+
     @GetMapping("/")
     public String homepage(){
         return "home";
@@ -35,11 +36,18 @@ public class AppController {
         return "home";
     }
 
+//    @GetMapping("/showdatabase")
+//    public String showDatabase(Model model){
+//        model.addAttribute("showdata",dataRepository.findAll(Sort.by(Sort.Direction.ASC, "station")));
+//        return "showdatabase";
+//    }
+
     @GetMapping("/showdatabase")
     public String showDatabase(Model model){
         model.addAttribute("showdata",dataRepository.findAll(Sort.by(Sort.Direction.ASC, "station")));
         return "showdatabase";
     }
+
 
     @GetMapping("/addentry")
     public String addEntry(Model model) {
@@ -75,7 +83,7 @@ public class AppController {
 
     @PostMapping("/remove")
     public String removeData(@ModelAttribute("entry") Data data ,RedirectAttributes attributes){
-        if(data.getStation().equals("") || data.getMac().equals("")) {
+        if(data.getStation().equals("")) {
             attributes.addFlashAttribute("added",  "Fields cannot be empty");
             return "redirect:/addentry";
         }
